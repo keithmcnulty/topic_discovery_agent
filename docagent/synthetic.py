@@ -29,6 +29,7 @@ def generate_synthetic_docs(
     context: str,
     additional_prompt: str = "No other instructions",
     model: str = synthetic_model,
+    model_temperature: float = 0.5,
     starting_docID: int = 1,
     num_docs: int = 20,
     min_doc_length: int = 50,
@@ -42,6 +43,7 @@ def generate_synthetic_docs(
         context (str): Context for the documents.
         additional_prompt (str): Any additional instructions to generate documents.
         model (str): The model to use for generation.
+        model_temperature (float): Temperature for the model, controlling randomness.
         starting_docID (int): Starting document ID for the generated documents.
         num_docs (int): Number of documents to generate.
         min_doc_length (int): Minimum no of tokens of each document.
@@ -82,6 +84,7 @@ def generate_synthetic_docs(
         with client.messages.stream(
             max_tokens=64000,
             system="You are an expert in generating synthetic documents for various industries.",
+            temperature=model_temperature,
             messages=[
                 {"role": "user", "content": prompt},
                 {"role": "assistant", "content": '[{"docID": ' + str(starting_docID) + ', "content": "'}

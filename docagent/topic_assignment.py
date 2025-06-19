@@ -65,13 +65,17 @@ tool_map = {
 }
 
 async def _batch_assign_topics(docIDs: list[int], corpus_name: str, corpus: pd.DataFrame, topics: pd.DataFrame,
-                                model:str = assignment_model) -> pd.DataFrame:
+                                model:str = assignment_model, model_temperature: float = 0.2) -> pd.DataFrame:
     """
     Process a list of document IDs and assign each to one or more topics within the original corpus dataframe.
     
     Args:
         docIDs (list[int]): List of document IDs to process.
+        corpus_name (str): Name of the corpus for processing, usually a string form of the corpus object name.
         corpus (pd.DataFrame): DataFrame containing documents with 'docID' and 'content' columns.
+        topics (pd.DataFrame): DataFrame containing topics with 'topicID', 'topicName', etc.
+        model (str): The model to use for topic assignment.
+        model_temperature (float): Temperature for the model, controlling randomness.
     
     Returns:
         pd.DataFrame: DataFrame containing assigned topics for each document.
@@ -117,6 +121,7 @@ async def _batch_assign_topics(docIDs: list[int], corpus_name: str, corpus: pd.D
     
     response = client.messages.create(
         model=model,
+        temperature=model_temperature,
         max_tokens=8000,
         system="You are an expert in topic assignment and you are required to assign documents to a set of topics based on their content",
         messages=[
@@ -177,7 +182,8 @@ async def _batch_assign_topics(docIDs: list[int], corpus_name: str, corpus: pd.D
     
 
 async def assign_topics(corpus_name: str, corpus: pd.DataFrame, topics: pd.DataFrame,
-                        model:str = assignment_model, chunk_size: int = 20) -> pd.DataFrame:
+                        model:str = assignment_model, model_temperature: float = 0.2,
+                        chunk_size: int = 20) -> pd.DataFrame:
     
     """
     Assign topics to documents in the corpus based on the provided topics DataFrame.
@@ -187,6 +193,7 @@ async def assign_topics(corpus_name: str, corpus: pd.DataFrame, topics: pd.DataF
         corpus (pd.DataFrame): DataFrame containing documents with 'docID' and 'content' columns.
         topics (pd.DataFrame): DataFrame containing topics with 'topicID', 'topicName', etc.
         model (str): The model to use for topic assignment.
+        model_temperature (float): Temperature for the model, controlling randomness.
         chunk_size (int): Size of document chunks for processing assignments.
     Returns:
         pd.DataFrame: DataFrame containing assigned topics for each document.

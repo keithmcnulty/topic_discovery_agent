@@ -22,13 +22,16 @@ class TopicDiscovery(BaseModel):
         description="Prevalence of the topic in the corpus, as a percentage of documents that are related to the topic",
     )
 
-async def discover_topics(corpus: pd.DataFrame, model: str = analytic_model, min_topics: int = 7, max_topics: int =15) -> pd.DataFrame:
+async def discover_topics(corpus: pd.DataFrame, model: str = analytic_model, 
+                          model_temperature: float = 0.2, min_topics: int = 7, 
+                          max_topics: int =15) -> pd.DataFrame:
     """
     Discover topics from a DataFrame of documents using the specified model.
     
     Args:
         docs (pd.DataFrame): DataFrame containing documents with 'docID' a 'content' column.
         model (str): The model to use for topic discovery.
+        model_temperature (float): Temperature for the model, controlling randomness.
         min_topics (int): Minimum number of topics to discover.
         max_topics (int): Maximum number of topics to discover.
     
@@ -61,6 +64,7 @@ async def discover_topics(corpus: pd.DataFrame, model: str = analytic_model, min
     print(f"Starting topic discovery from {len(corpus)} documents using model {model}...")
     response = client.messages.create(
         model=model,
+        temperature=model_temperature,
         max_tokens=8000,    
         system="You are an expert in determining distinct topics from a set of documents.", 
         messages=[
