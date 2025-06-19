@@ -1,4 +1,4 @@
-# document_categorization_agent
+# topic_discovery_agent
 
 Agent to categorize documents into topics using Anthropic LLMs.
 
