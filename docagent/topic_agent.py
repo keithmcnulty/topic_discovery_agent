@@ -4,15 +4,17 @@ import pandas as pd
 import time
 
 async def full_topic_analysis(corpus: pd.DataFrame, corpus_name: str, min_topics: int = 7, max_topics: int = 15,
-                              chunk_size = 20) -> tuple:
+                              model_temperature: float = 0.7, chunk_size = 20) -> tuple:
     """
-    Perform full topic analysis including discovery and assignment of topics to documents.
+    Perform full topic analysis including discovery and assignment of topics to documents.  Uses models as specified
+    in the environment variables for topic discovery and assignment.
     
     Args:
         corpus (pd.DataFrame): DataFrame containing documents with 'docID' and 'content' columns.
         corpus_name (str): Name of the corpus for processing.
         min_topics (int): Minimum number of topics to discover.
         max_topics (int): Maximum number of topics to discover.
+        model_temperature (float): Temperature for the topic discovery and assignment models.
         chunk_size (int): Size of document chunks for processing assignments.
         
     Returns:
@@ -25,12 +27,14 @@ async def full_topic_analysis(corpus: pd.DataFrame, corpus_name: str, min_topics
 
     # Discover topics
     discovered_topics = await td.discover_topics(
+        model_temperature = model_temperature,
         corpus = corpus, 
         min_topics = min_topics, 
         max_topics = max_topics)
     
     # Assign topics to documents
     doc_assignment = await ta.assign_topics(
+        model_temperature = model_temperature,
         corpus_name = corpus_name,
         corpus = corpus,
         topics = discovered_topics,

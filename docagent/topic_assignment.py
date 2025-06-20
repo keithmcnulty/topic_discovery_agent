@@ -209,6 +209,8 @@ async def assign_topics(corpus_name: str, corpus: pd.DataFrame, topics: pd.DataF
     for chunk in doc_chunks:
         print(f"Assigning topics for docs {chunk[0]} to {chunk[-1]}...")
         assigned_docs = await _batch_assign_topics(
+            model = model,
+            model_temperature = model_temperature,
             docIDs = chunk,
             corpus_name = corpus_name,
             corpus = corpus,
